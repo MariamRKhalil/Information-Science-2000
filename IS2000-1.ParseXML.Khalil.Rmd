@@ -1,0 +1,64 @@
+---
+title: 'IS2000 Parse XML into R with Node Traversal'
+author: 'Mariam Khalil'
+Date: 'Spring 2024'
+---
+
+```{r, echo=FALSE}
+# Load the XML library
+library(XML)
+
+# URL for the XML
+xml_url <- "http://artificium.us/datasets/LearningAssets-v2.xml"
+
+# Parse through the XML file
+xml_data <- xmlParse(xml_url)
+
+# Check if the XML parsing was successful
+if (!inherits(xml_data, "XMLInternalDocument")) {
+  cat("XML parsing failed. The document does not match the DTD.\n")
+} else {
+  cat("XML parsing successful. The document matches the DTD.\n")
+}
+
+```
+
+```{r}
+# Function to count authors
+count_authors <- function(xml_data) {
+  authors <- xmlChildren(xml_data[["root"]][["Authors"]])
+  print(authors) # Add this line to check the value of 'authors'
+  num_authors <- length(authors)
+  return(num_authors)
+}
+
+# Function to count lessons
+count_lessons <- function(xml_data) {
+  lessons <- xml_data[["root"]][["Lessons"]][["Lesson"]]
+  print(lessons) # Add this line to check the value of 'lessons'
+  num_lessons <- length(lessons)
+  return(num_lessons)
+}
+
+# Function to count videos
+count_videos <- function(xml_data) {
+  videos <- xml_data[["root"]][["LearningAssets"]][["Video"]]
+  print(videos) # Add this line to check the value of 'videos'
+  num_videos <- length(videos)
+  return(num_videos)
+}
+
+# Function to count slide decks
+count_slide_decks <- function(xml_data) {
+  slide_decks <- xml_data[["root"]][["LearningAssets"]][["SlideDeck"]]
+  print(slide_decks) # Add this line to check the value of 'slide_decks'
+  num_slide_decks <- length(slide_decks)
+  return(num_slide_decks)
+}
+cat("The repository contains", num_lessons, ifelse(num_lessons == 1, "lesson", "lessons"),
+    "written by a cadre of", num_authors, ifelse(num_authors == 1, "author", "authors"),
+    "who produced", num_videos, ifelse(num_videos == 1, "video", "videos"),
+    "and", num_slide_decks, ifelse(num_slide_decks == 1, "slide deck", "slide decks"), ".\n")
+
+```
+
