@@ -1,0 +1,57 @@
+---
+title: "IS2000 Load XML"
+author: "Mariam Khalil"
+date: "Spring 2024"
+output: html_notebook
+---
+```{r}
+library(XML)
+file_path <- "C:/Users/maria/Downloads/IS2000.Stocks.RevC.xml"
+xml_data <- xmlParse(file_path)
+df.stocks <- xmlToDataFrame(xml_data)
+```
+
+
+
+
+```{r}
+
+# Filter stocks with prices less than 20
+symbols_less_than_20 <- df.stocks$symbol[as.numeric(df.stocks$price) < 20]
+
+# Display symbols
+print("Symbols of stocks with price less than 20:")
+print(symbols_less_than_20)
+```
+```{r}
+# Calculate 10% trimmed mean of prices of stocks traded on NASDAQ
+nasdaq_prices <- as.numeric(df.stocks$price[df.stocks$exchange == "nasdaq"])
+
+# Check for missing or invalid values
+nasdaq_prices <- nasdaq_prices[!is.na(nasdaq_prices) & !is.infinite(nasdaq_prices)]
+
+if (length(nasdaq_prices) > 0) {
+  trimmed_mean <- mean(nasdaq_prices, trim = 0.1)
+  
+  # Display trimmed mean
+  cat("10% trimmed mean of prices of stocks traded on NASDAQ:", trimmed_mean, "\n")
+} else {
+  cat("No valid prices found for stocks traded on NASDAQ.\n")
+}
+```
+
+```{r}
+# Find the price of the stock with symbol ZULX
+stock_symbol <- "ZULX"
+stock_price <- df.stocks$price[df.stocks$symbol == stock_symbol]
+message <- paste("The price of", capitalize(stock_symbol), "(", stock_symbol, ") is $", round(as.numeric(stock_price), 2), sep = "")
+print(message)
+
+# Helper function to capitalize the first letter of a string
+capitalize <- function(x) {
+  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+  return(x)
+}
+```
+
+
